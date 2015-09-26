@@ -18,7 +18,25 @@ class TestClass(TestCase):
         app.db = app.mongo_client['leetnews']
         app.posts = app.db['posts']
 
+        app.posts.drop()
+
     def testCreatePost(self):
-        data = json.dumps({'author': 'John Doe', 'title': 'My new post', 'url': 'https://google.com' })
-        response = self.test_app.post('/post/', data = data, content_type='application/json')
+        ''' Test post creation '''
+
+        data = {'author': 'John Doe', 'title': 'My new post', 'url': 'https://google.com' }
+        response = self.test_app.post('/post/', data = json.dumps(data), content_type='application/json')
         self.assertEqual(response.status_code, 200)
+        item = app.posts.find_one({'author': 'John Doe'})
+
+        self.assertIsNotNone(item['date'])
+
+        del item['date']
+        del item['_id']
+        self.assertEqual(item, data)
+
+    def testCreatePostMissing(self):
+        ''' Test post creation parameters missing '''
+
+        data = {'foobar': 'John Doe', 'title': 'My new post', 'url': 'https://google.com' }
+        response = self.test_app.post('/post/', data = json.dumps(data), content_type='application/json')
+        self.assertEqual(response.status_code, 400)
