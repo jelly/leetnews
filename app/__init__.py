@@ -11,8 +11,6 @@ app.posts = app.db['posts']
 
 @app.route('/post/', methods=['GET', 'POST'])
 def post():
-    print('print me \n')
-    print (app.mongo_client)
     # List of posts
     if request.method == 'GET':
         # FIXME: add pagination
