@@ -54,4 +54,5 @@ class TestPost(TestBase):
         # Verify error message
         data = json.loads(response.data.decode('utf-8'))
         self.assertEqual(data['errors'], 'too many dictionary keys')
-        self.assertEqual(data['keys'], 'test, foobar')
+        self.assertIn('foobar', data['keys'])
+        self.assertIn('test', data['keys'])
